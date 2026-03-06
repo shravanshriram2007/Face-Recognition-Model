@@ -2,9 +2,6 @@ import time
 import cv2
 import cvzone
 from ultralytics import YOLO
-
-confidence_threshold = 0.01  # <-- lowered for debugging
-
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)
 cap.set(4, 480)
@@ -21,7 +18,7 @@ while True:
 
     new_frame_time = time.time()
 
-    results = model(img, stream=True, verbose=True, imgsz=640)  # verbose=True to see raw output
+    results = model(img, stream=True, verbose=True, imgsz=640)  
 
     for r in results:
         if len(r.boxes) == 0:
