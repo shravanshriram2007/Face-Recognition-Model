@@ -48,18 +48,24 @@ for i, out in enumerate(Output):
             f'{outputFolderPath}/{sequence[i]}/labels/{fileName}.txt'
         )
 
-# Create data.yaml
-dataYaml = f"""
-path: ../SplitData
-train: train/images
-val: val/images
-test: test/images
+# FIX: Use absolute path and proper YAML list format for names
+absSplitPath = os.path.abspath(outputFolderPath).replace("\\", "/")
+
+# FIX: Format class names as proper YAML list (not Python list with quotes)
+namesYaml = "\n".join([f"  - {c}" for c in classes])
+
+dataYaml = f"""path: {absSplitPath}
+train: {absSplitPath}/train/images
+val: {absSplitPath}/val/images
+test: {absSplitPath}/test/images
 
 nc: {len(classes)}
-names: {classes}
+names:
+{namesYaml}
 """
 
 with open(f"{outputFolderPath}/data.yaml", 'w') as f:
     f.write(dataYaml)
 
 print("Split Completed & data.yaml Created")
+print(f"Absolute path used: {absSplitPath}")

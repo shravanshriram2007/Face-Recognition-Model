@@ -1,8 +1,8 @@
 from ultralytics import YOLO
 import cv2
 
-model = YOLO("models/best.pt")
-results = model(r"E:\Coding\Eye\YOLOtest\testing.jpg",conf = 0.1)
+model = YOLO("runs/detect/train/weights/best.pt")
+results = model(r"E:\Coding\Eye\YOLOtest\testing.jpg")
 print(results[0].boxes)
 img = results[0].plot()
 

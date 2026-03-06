@@ -6,7 +6,7 @@ import cv2
 classID = 0  # 0 = fake, 1 = real
 
 outputFolderPath = 'Dataset/all'
-confidence = 1.3  # scaleFactor for Haar
+scaleFactor = 1.1       # FIX: was 1.3 (too aggressive). 1.1 detects more faces.
 minNeighbors = 5
 blurThreshold = 35
 camWidth, camHeight = 640, 480
@@ -19,7 +19,6 @@ cap = cv2.VideoCapture(0)
 cap.set(3, camWidth)
 cap.set(4, camHeight)
 
-# Load Haar Cascade
 faceCascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 )
@@ -29,10 +28,13 @@ while True:
     if not success:
         break
 
+    # FIX: Keep a clean copy for saving — never draw on this
+    imgToSave = img.copy()
+
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(
         imgGray,
-        scaleFactor=confidence,
+        scaleFactor=scaleFactor,
         minNeighbors=minNeighbors
     )
 
@@ -40,7 +42,6 @@ while True:
     listInfo = []
 
     for (x, y, w, h) in faces:
-
         imgFace = img[y:y + h, x:x + w]
 
         if imgFace.size == 0:
@@ -65,7 +66,7 @@ while True:
 
         listInfo.append(f"{classID} {xcn} {ycn} {wn} {hn}\n")
 
-        # Draw rectangle
+        # Draw rectangle on display image ONLY (not on imgToSave)
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         cv2.putText(img, f"Blur:{blurValue}",
                     (x, y - 10),
@@ -73,14 +74,15 @@ while True:
                     0.7,
                     (0, 255, 0), 2)
 
-    # Save image + label
+    # Save CLEAN image (no rectangles drawn on it)
     if faces is not None and len(faces) > 0:
         if all(listBlur) and listBlur != []:
             timeNow = str(time()).replace('.', '')
             imgPath = f"{outputFolderPath}/{timeNow}.jpg"
             labelPath = f"{outputFolderPath}/{timeNow}.txt"
 
-            cv2.imwrite(imgPath, img)
+            # FIX: Save the clean copy, not the annotated one
+            cv2.imwrite(imgPath, imgToSave)
 
             with open(labelPath, 'w') as f:
                 for info in listInfo:
@@ -88,7 +90,7 @@ while True:
 
             print("Saved:", timeNow)
 
-    cv2.imshow("Data Collection - Haar", img)
+    cv2.imshow("Data Collection - Haar", img)  # show annotated version for preview
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

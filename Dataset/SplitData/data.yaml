@@ -1,8 +1,9 @@
-
-path: E:\Coding\Eye\YOLOtest\Dataset\SplitData
-train: E:\Coding\Eye\YOLOtest\Dataset\SplitData\train\images
-val: E:\Coding\Eye\YOLOtest\Dataset\SplitData\val\images
-test: E:\Coding\Eye\YOLOtest\Dataset\SplitData\test\images
+path: E:/Coding/Eye/YOLOtest/Dataset/SplitData
+train: E:/Coding/Eye/YOLOtest/Dataset/SplitData/train/images
+val: E:/Coding/Eye/YOLOtest/Dataset/SplitData/val/images
+test: E:/Coding/Eye/YOLOtest/Dataset/SplitData/test/images
 
 nc: 2
-names: ['fake', 'real']
+names:
+  - fake
+  - real
