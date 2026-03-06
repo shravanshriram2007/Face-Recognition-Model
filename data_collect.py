@@ -2,11 +2,10 @@ from time import time
 import os
 import cv2
 
-# -------------------- CONFIG --------------------
 classID = 0  # 0 = fake, 1 = real
 
 outputFolderPath = 'Dataset/all'
-scaleFactor = 1.1       # FIX: was 1.3 (too aggressive). 1.1 detects more faces.
+scaleFactor = 1.1       
 minNeighbors = 5
 blurThreshold = 35
 camWidth, camHeight = 640, 480
@@ -28,7 +27,6 @@ while True:
     if not success:
         break
 
-    # FIX: Keep a clean copy for saving — never draw on this
     imgToSave = img.copy()
 
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -55,7 +53,6 @@ while True:
         else:
             listBlur.append(False)
 
-        # Normalize for YOLO format
         ih, iw, _ = img.shape
         xc, yc = x + w / 2, y + h / 2
 
@@ -66,7 +63,7 @@ while True:
 
         listInfo.append(f"{classID} {xcn} {ycn} {wn} {hn}\n")
 
-        # Draw rectangle on display image ONLY (not on imgToSave)
+        # Draw rectangle on display image
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         cv2.putText(img, f"Blur:{blurValue}",
                     (x, y - 10),
@@ -74,7 +71,6 @@ while True:
                     0.7,
                     (0, 255, 0), 2)
 
-    # Save CLEAN image (no rectangles drawn on it)
     if faces is not None and len(faces) > 0:
         if all(listBlur) and listBlur != []:
             timeNow = str(time()).replace('.', '')
@@ -90,7 +86,7 @@ while True:
 
             print("Saved:", timeNow)
 
-    cv2.imshow("Data Collection - Haar", img)  # show annotated version for preview
+    cv2.imshow("Data Collection - Haar", img) 
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
