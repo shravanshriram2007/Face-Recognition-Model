@@ -8,16 +8,14 @@ inputFolderPath = "Dataset/all"
 splitRatio = {"train": 0.7, "val": 0.2, "test": 0.1}
 classes = ["fake", "real"]
 
-# Remove old split folder
+
 if os.path.exists(outputFolderPath):
     shutil.rmtree(outputFolderPath)
 
-# Create directories
 for split in splitRatio.keys():
     os.makedirs(f"{outputFolderPath}/{split}/images", exist_ok=True)
     os.makedirs(f"{outputFolderPath}/{split}/labels", exist_ok=True)
 
-# Get unique names
 listNames = os.listdir(inputFolderPath)
 uniqueNames = list(set([name.split('.')[0] for name in listNames]))
 
@@ -48,10 +46,7 @@ for i, out in enumerate(Output):
             f'{outputFolderPath}/{sequence[i]}/labels/{fileName}.txt'
         )
 
-# FIX: Use absolute path and proper YAML list format for names
 absSplitPath = os.path.abspath(outputFolderPath).replace("\\", "/")
-
-# FIX: Format class names as proper YAML list (not Python list with quotes)
 namesYaml = "\n".join([f"  - {c}" for c in classes])
 
 dataYaml = f"""path: {absSplitPath}
